@@ -139,12 +139,16 @@ if __name__ == '__main__':
                             arr = []
                             counter = 0
                             if(predictions_labels_plot[0] == 'nothing'):
-                                print("final_arr is :")
+                            
                                 if(len(final_arr) != 0):
+                                    print("final_arr is :")
                                     print(''.join(final_arr))
                                     final_arr = []
                             else:
-                                final_arr.append(str(predictions_labels_plot[0]))
+                                final_arr.append('Enter gest ' + str(predictions_labels_plot[0]))
+                                cv2.putText(frame, str(len(final_arr) +1),
+                                    (int(im_width*0.1),int(im_height*0.1)),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
                                 #print(final_arr)
                                 break
             #print(final_arr)
