@@ -29,17 +29,17 @@ def get_labels_for_plot(predictions):
     for ins in labels_dict:
         if predictions == labels_dict[ins]:
             predictions_labels.append(ins)
-            return predictions_labels
-            #break
-    #return predictions_labels
+            #return predictions_labels
+            break
+    return predictions_labels
 
 def load_test_dataa():
     images = []
     names = []
     size = 64,64
     temp = cv2.imread('./img2.jpg')
-    temp = cv2.cvtColor(temp,cv2.COLOR_BGR2RGB)
-    cv2.imwrite('out.jpg',temp)
+    #temp = cv2.cvtColor(temp,cv2.COLOR_BGR2RGB)
+    #cv2.imwrite('out.jpg',temp)
     temp = cv2.resize(temp, size)
     images.append(temp)
     names.append('img2')
@@ -111,16 +111,18 @@ if __name__ == '__main__':
                 num_hands_detect, score_thresh, scores, boxes, classes, im_width, im_height, frame)
             #print(scores)
             if(max(scores) <0.5):
-                img = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
-                cv2.imwrite("img2.jpg",img)
+                #img = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+                #img = cv2.cvtColor(frame,cv2.COLOR_RGB2BGR)
+                cv2.imwrite("img2.jpg",frame)
 
 ###############################################TODO#####################################################
             #TODO:  NOT SURE ABOUT THIS (Try filters)
 
 
             tester_img,tester_name = load_test_dataa()
-            pred = (model.predict_classes(tester_img))
+            pred = model.predict_classes(tester_img)
             predictions_labels_plot = get_labels_for_plot(pred)
+            #print(predictions_labels_plot[0]) 
 
             # new_frame = cv2.imread("img2.jpg")
             # roi=cv2.resize(new_frame,(64,64))
@@ -136,22 +138,31 @@ if __name__ == '__main__':
                         if counter == len(arr):
                             arr = []
                             counter = 0
-                            final_arr.append(predictions_labels_plot)
-                            break
+                            if(predictions_labels_plot[0] == 'nothing'):
+                                print("final_arr is :")
+                                if(len(final_arr) != 0):
+                                    print(''.join(final_arr))
+                                    final_arr = []
+                            else:
+                                final_arr.append(str(predictions_labels_plot[0]))
+                                #print(final_arr)
+                                break
             #print(final_arr)
             #print()
             #print("Enter next gesture")
+
+            
 
 
 
 
             arr.append(predictions_labels_plot)
 
-            print(predictions_labels_plot)
+            #print(predictions_labels_plot)
 
             cv2.putText(frame, str(predictions_labels_plot),
-                        (int(im_width*0.7),int(im_height*0.1)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.75,(255,0,0), 2)
+                        (int(im_width*0.65),int(im_height*0.1)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
 #########################################################################################################
 
             # Calculate Frames per second (FPS)
