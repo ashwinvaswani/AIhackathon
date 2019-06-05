@@ -75,7 +75,8 @@ if __name__ == '__main__':
     arr = []
     final_arr = []
     counter = 0
-    print("Enter first gesture")
+    #print("Enter first gesture")
+    gesture_no = 1
 
     try:
         while True:
@@ -98,6 +99,9 @@ if __name__ == '__main__':
             font=cv2.FONT_HERSHEY_SCRIPT_SIMPLEX 
             kernel=np.ones((3,3))
 
+            cv2.putText(frame, 'Enter gesture ' + str(gesture_no),
+                                    (int(im_width*0.01),int(im_height*0.1)),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
 
             #cv2.putText(frame,' '+str(predictions_labels_plot),(0,50),font,0.5,(255,255,255),1)
             # Run image through tensorflow graph
@@ -131,6 +135,9 @@ if __name__ == '__main__':
             # pred = (model.predict_classes(x))
             # predictions_labels_plot = get_labels_for_plot(pred)
 
+
+
+
             if(len(arr) > 10 ):
                 for elmts in arr:
                     if predictions_labels_plot == elmts:
@@ -143,12 +150,14 @@ if __name__ == '__main__':
                                 if(len(final_arr) != 0):
                                     print("final_arr is :")
                                     print(''.join(final_arr))
+                                    gesture_no = 1
                                     final_arr = []
                             else:
                                 final_arr.append('Enter gest ' + str(predictions_labels_plot[0]))
-                                cv2.putText(frame, str(len(final_arr) +1),
-                                    (int(im_width*0.1),int(im_height*0.1)),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
+                                gesture_no += 1
+                                # cv2.putText(frame, str(len(final_arr) +1),
+                                #     (int(im_width*0.1),int(im_height*0.1)),
+                                #     cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
                                 #print(final_arr)
                                 break
             #print(final_arr)
