@@ -21,7 +21,7 @@ from utils import detector_utils as detector_utils
 
 labels_dict = {'A':0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'J':9,'K':10,'L':11,'M':12,
                                'N':13,'O':14,'P':15,'Q':16,'R':17,'S':18,'T':19,'U':20,'V':21,'W':22,'X':23,'Y':24,
-                               'Z':25,'space':26,'del':27,'nothing':28}
+                               'Z':25,'nothing':26}
 
 
 def get_labels_for_plot(predictions):
@@ -29,17 +29,16 @@ def get_labels_for_plot(predictions):
     for ins in labels_dict:
         if predictions == labels_dict[ins]:
             predictions_labels.append(ins)
-            #return predictions_labels
-            break
-    return predictions_labels
+            return ins
+
+            #break
+    #return predictions_labels
 
 def load_test_dataa():
     images = []
     names = []
-    size = 64,64
+    size = 128,128
     temp = cv2.imread('./img2.jpg')
-    #temp = cv2.cvtColor(temp,cv2.COLOR_BGR2RGB)
-    #cv2.imwrite('out.jpg',temp)
     temp = cv2.resize(temp, size)
     images.append(temp)
     names.append('img2')
@@ -58,7 +57,7 @@ if __name__ == '__main__':
     # Detection confidence threshold to draw bounding box
     score_thresh = 0.60
 
-    model=load_model('Final_model_asl.h5')
+    model=load_model('Final_model_asl_new1.h5')
 
     # Get stream from webcam and set parameters)
     vs = VideoStream().start()
@@ -89,13 +88,14 @@ if __name__ == '__main__':
 
             # Convert image to rgb since opencv loads images in bgr, if not accuracy will decrease
             try:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            	cv2.imwrite('frame_copy.jpg',frame)
+            	frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
             except:
                 print("Error converting to RGB")
 
             #print(frame)
 
-            cv2.imwrite('1.jpg',frame)
             font=cv2.FONT_HERSHEY_SCRIPT_SIMPLEX 
             kernel=np.ones((3,3))
 
@@ -103,40 +103,24 @@ if __name__ == '__main__':
                                     (int(im_width*0.01),int(im_height*0.1)),
                                     cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
 
-            #cv2.putText(frame,' '+str(predictions_labels_plot),(0,50),font,0.5,(255,255,255),1)
             # Run image through tensorflow graph
             boxes, scores, classes = detector_utils.detect_objects(
                 frame, detection_graph, sess)
 
-            #print(boxes)
 
             # Draw bounding boxeses and text
             detector_utils.draw_box_on_image(
                 num_hands_detect, score_thresh, scores, boxes, classes, im_width, im_height, frame)
-            #print(scores)
-            if(max(scores) <0.5):
-                #img = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
-                #img = cv2.cvtColor(frame,cv2.COLOR_RGB2BGR)
-                cv2.imwrite("img2.jpg",frame)
 
-###############################################TODO#####################################################
-            #TODO:  NOT SURE ABOUT THIS (Try filters)
+            # When no hand is detected
+            if(max(scores) < 0.5):
+            	frame_copy = cv2.imread('frame_copy.jpg')
+            	cv2.imwrite("img2.jpg",frame_copy)
 
-
+            #Preparing cropped image for prediction
             tester_img,tester_name = load_test_dataa()
             pred = model.predict_classes(tester_img)
             predictions_labels_plot = get_labels_for_plot(pred)
-            #print(predictions_labels_plot[0]) 
-
-            # new_frame = cv2.imread("img2.jpg")
-            # roi=cv2.resize(new_frame,(64,64))
-            # roi=cv2.cvtColor(roi,cv2.COLOR_RGB2BGR)
-            # x=np.reshape(roi,(-1,64,64,3))
-            # pred = (model.predict_classes(x))
-            # predictions_labels_plot = get_labels_for_plot(pred)
-
-
-
 
             if(len(arr) > 10 ):
                 for elmts in arr:
@@ -145,7 +129,7 @@ if __name__ == '__main__':
                         if counter == len(arr):
                             arr = []
                             counter = 0
-                            if(predictions_labels_plot[0] == 'nothing'):
+                            if(predictions_labels_plot == 'nothing'):
                             
                                 if(len(final_arr) != 0):
                                     print("final_arr is :")
@@ -153,21 +137,14 @@ if __name__ == '__main__':
                                     gesture_no = 1
                                     final_arr = []
                             else:
-                                final_arr.append('Enter gest ' + str(predictions_labels_plot[0]))
+                                final_arr.append(str(predictions_labels_plot))
                                 gesture_no += 1
-                                # cv2.putText(frame, str(len(final_arr) +1),
-                                #     (int(im_width*0.1),int(im_height*0.1)),
-                                #     cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
+                              
                                 #print(final_arr)
                                 break
             #print(final_arr)
             #print()
             #print("Enter next gesture")
-
-            
-
-
-
 
             arr.append(predictions_labels_plot)
 
@@ -176,7 +153,6 @@ if __name__ == '__main__':
             cv2.putText(frame, str(predictions_labels_plot),
                         (int(im_width*0.65),int(im_height*0.1)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
-#########################################################################################################
 
             # Calculate Frames per second (FPS)
             num_frames += 1
