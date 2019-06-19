@@ -81,6 +81,10 @@ def draw_box_on_image(num_hands_detect, score_thresh, scores, boxes, classes, im
             img2.save("img2.jpg")
 
 
+            img_thr = Image.open("threshold.jpg")
+            img_thr2 = img_thr.crop((left,top, right, bottom))
+            img_thr2.save("img_thr2.jpg")
+
             # img = cv2.imread("img2.jpg")
             # img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
             # cv2.imwrite("img2.jpg",img)
