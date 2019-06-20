@@ -24,7 +24,7 @@ from utils import detector_utils as detector_utils
 
 labels_dict = {'A':0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'J':9,'K':10,'L':11,'M':12,
                                'N':13,'O':14,'P':15,'Q':16,'R':17,'S':18,'T':19,'U':20,'V':21,'W':22,'X':23,'Y':24,
-                               'Z':25,'Nothing':26}
+                               'Z':25,'nothing':26,'space':27,'delete':28,'complete':29}
 
 def create_model():
     
@@ -74,8 +74,8 @@ def get_labels_for_plot(predictions):
 def load_test_dataa():
     images = []
     names = []
-    size = 128,128
-    temp = cv2.imread('./img2.jpg')
+    size = 50,50
+    temp = cv2.imread('./img_thr2.jpg')
     temp = cv2.resize(temp, size)
     #temp = cv2.cvtColor(temp,cv2.COLOR_RGB2GRAY)
     images.append(temp)
@@ -138,7 +138,7 @@ if __name__ == '__main__':
     #model = create_model()
     #model.load_weights('Final_model_wn_weights.h5')
 
-    model = load_model('Final_model_asl_new1.h5')
+    model = load_model('new_model.h5')
     # Get stream from webcam and set parameters)
     vs = VideoStream().start()
 
