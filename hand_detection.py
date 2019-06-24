@@ -256,15 +256,15 @@ if __name__ == '__main__':
                             
                                 if(len(final_arr) != 0):
                                     #print("final_arr is :")
-                                    print(''.join(final_arr))
+                                    #print(''.join(final_arr))
                                     gesture_no = 1
-                                    Sent_arr,append(str(''.join(final_arr)))
+                                    Sent_arr.append(str(''.join(final_arr)))
                                     final_arr = []
                             elif(predictions_labels_plot == 'delete'):
                             
                                 if(len(final_arr) != 0):
                                     #print("final_arr is :")
-                                    print(''.join(final_arr))
+                                    #print(''.join(final_arr))
                                     final_arr.pop()
                                     gesture_no += 1
                             elif(predictions_labels_plot == 'complete'):
