@@ -135,15 +135,18 @@ def recommend_word(text):
             return [None,None]
         r = []
         flag = 0
+        cnt = 0
 
         for i in words:
             if i.startswith(text):
                 r.append(i)
+                cnt += 1
                 if len(r) == 2:
                     flag = 1
                     return r
-
-        if flag == 0:
+        if cnt == 1:
+            return [r[0],None]
+        elif flag == 0:
             return [None,None]
 
 def recommend_sentence(text):
@@ -343,8 +346,7 @@ if __name__ == '__main__':
                                     gesture_no += 1
                                     #print(str(''.join(final_arr)).lower())
                                     r1,r2=recommend_word(str(''.join(final_arr)).lower())
-                                else:
-                                    r1,r2=recommend_sentence(word2tdf)
+                            
 
 
                                 gesture_no = 1
@@ -356,6 +358,13 @@ if __name__ == '__main__':
                                     word2tdf=r1
                                     print(word2tdf)
                                     gesture_no=1
+                                    r1 = None
+                                    r2 = None
+                                    r3,r4=recommend_sentence(word2tdf)
+                                    r3 = r3[0]
+                                    r4 = r4[0]
+                                    print(r3)
+                                    print(r4)
 
                             elif (predictions_labels_plot == 'space'):
                                 if(r2 != None):
@@ -363,6 +372,13 @@ if __name__ == '__main__':
                                     final_arr=[]
                                     word2tdf=r2
                                     gesture_no=1
+                                    r1 = None
+                                    r2 = None
+                                    r3,r4=recommend_sentence(word2tdf)
+                                    r3 = r3[0]
+                                    r4 = r4[0]
+                                    print(r3)
+                                    print(r4)
     
                             else:
                                 final_arr.append(str(predictions_labels_plot))
@@ -371,10 +387,7 @@ if __name__ == '__main__':
                                 if len(final_arr)!=0:
                                     #print(str(''.join(final_arr)).lower())
                                     r1,r2=recommend_word(str(''.join(final_arr)).lower())
-                                   
-                                else:
-                                    r3,r4=recommend_sentence(word2tdf)
-
+ 
                                 break
 
             arr.append(predictions_labels_plot)
@@ -384,20 +397,24 @@ if __name__ == '__main__':
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
 
             cv2.putText(frame, 'Word : ' + str(''.join(final_arr)),
-                        (int(im_width * 0.01), int(im_height * 0.8)),
+                        (int(im_width * 0.01), int(im_height * 0.75)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
 
             cv2.putText(frame, 'Word Recommendations -  1: ' + str(r1) + ' 2: ' + str(r2),
-                        (int(im_width * 0.01), int(im_height * 0.73)),
+                        (int(im_width * 0.01), int(im_height * 0.68)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
 
             cv2.putText(frame, 'Sentence : ' + str(' '.join(Sent_arr)),
-                        (int(im_width * 0.01), int(im_height * 0.94)),
+                        (int(im_width * 0.01), int(im_height * 0.96)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
 
-            cv2.putText(frame, 'Sentence Recommendations - 1: ' + str(r3) + ' 2: ' + str(r4),
-                        (int(im_width * 0.01), int(im_height * 0.87)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+            cv2.putText(frame, 'Sentence Recommendation-1: ' + str(r3),
+                        (int(im_width * 0.01), int(im_height * 0.82)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
+            cv2.putText(frame, 'Sentence Recommendations-2: ' + str(r4),
+                        (int(im_width * 0.01), int(im_height * 0.89)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
             # Calculate Frames per second (FPS)
             num_frames += 1
