@@ -236,10 +236,14 @@ if __name__ == '__main__':
             	frame_copy = cv2.imread('frame_copy.jpg')
             	cv2.imwrite("img_thr2.jpg",frame_copy)
 
+
             #Preparing cropped image for prediction
             tester_img,tester_name = load_test_dataa()
             pred = model.predict_classes(tester_img)
             predictions_labels_plot = get_labels_for_plot(pred)
+
+            if(max(scores) < 0.5):
+            	predictions_labels_plot = "nothing"
 
             if(len(arr) > 15 ):
                 for elmts in arr:
@@ -280,7 +284,9 @@ if __name__ == '__main__':
                    				#####################################################
                    							#TODO( Add code here )
 
-                   				#Predict word based on word existing in final_arr currently and set it in recommended variable
+                   				#Predict word based on word existing in str(''.join(final_arr)) currently and set it in recommended variable
+                   				#Preferably create a fucntion for recommending and call that fxn here with str(''.join(final_arr)) as argument.
+                   				# I have initialized the recommended variable to "None". Please make whatever changes necessary.
 
                    				#####################################################
 
