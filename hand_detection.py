@@ -161,6 +161,7 @@ if __name__ == '__main__':
     arr = []
     final_arr = []
     Sent_arr = []
+    recommended = "None"	
     counter = 0
     #print("Enter first gesture")
     gesture_no = 1
@@ -233,7 +234,7 @@ if __name__ == '__main__':
             # When no hand is detected
             if(max(scores) < 0.5):
             	frame_copy = cv2.imread('frame_copy.jpg')
-            	cv2.imwrite("img2.jpg",frame_copy)
+            	cv2.imwrite("img_thr2.jpg",frame_copy)
 
             #Preparing cropped image for prediction
             tester_img,tester_name = load_test_dataa()
@@ -276,6 +277,14 @@ if __name__ == '__main__':
                             else:
                                 final_arr.append(str(predictions_labels_plot))
                                 gesture_no += 1
+                   				#####################################################
+                   							#TODO( Add code here )
+
+                   				#Predict word based on word existing in final_arr currently and set it in recommended variable
+
+                   				#####################################################
+
+
                                 break
 
             arr.append(predictions_labels_plot)
@@ -285,9 +294,9 @@ if __name__ == '__main__':
                                     cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
 
 
-            # cv2.putText(frame, 'Recommendation : ' +  str(''.join(final_arr)),
-            #             (int(im_width*0.01),int(im_height*0.7)),
-            #             cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
+            cv2.putText(frame, 'Recommendation : ' +  recommended,
+                        (int(im_width*0.01),int(im_height*0.7)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
 
             cv2.putText(frame, 'Word : ' +  str(''.join(final_arr)),
                         (int(im_width*0.01),int(im_height*0.8)),
