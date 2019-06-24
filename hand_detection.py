@@ -138,6 +138,13 @@ if __name__ == '__main__':
     #model = create_model()
     #model.load_weights('Final_model_wn_weights.h5')
 
+ 	####################################################
+ 						#TODO (Add code here)
+
+ 	#Check if any .jpg files already exist or no. If yes, delete them
+
+ 	####################################################
+
     model = load_model('new_model.h5')
     # Get stream from webcam and set parameters)
     vs = VideoStream().start()
@@ -153,6 +160,7 @@ if __name__ == '__main__':
 
     arr = []
     final_arr = []
+    Sent_arr = []
     counter = 0
     #print("Enter first gesture")
     gesture_no = 1
@@ -207,18 +215,12 @@ if __name__ == '__main__':
                         break
 
 
-
-
             num_frames += 1
-            #print(frame)
 
             font=cv2.FONT_HERSHEY_SCRIPT_SIMPLEX 
             kernel=np.ones((3,3))
 
-            cv2.putText(frame, 'Enter gesture ' + str(gesture_no),
-                                    (int(im_width*0.01),int(im_height*0.1)),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
-
+        
             # Run image through tensorflow graph
             boxes, scores, classes = detector_utils.detect_objects(
                 frame, detection_graph, sess)
@@ -238,7 +240,7 @@ if __name__ == '__main__':
             pred = model.predict_classes(tester_img)
             predictions_labels_plot = get_labels_for_plot(pred)
 
-            if(len(arr) > 10 ):
+            if(len(arr) > 15 ):
                 for elmts in arr:
                     if predictions_labels_plot == elmts:
                         counter += 1
@@ -248,26 +250,51 @@ if __name__ == '__main__':
                             if(predictions_labels_plot == 'nothing'):
                             
                                 if(len(final_arr) != 0):
-                                    print("final_arr is :")
+                                    #print("final_arr is :")
                                     print(''.join(final_arr))
                                     gesture_no = 1
+                                    Sent_arr,append(str(''.join(final_arr)))
                                     final_arr = []
+                            elif(predictions_labels_plot == 'delete'):
+                            
+                                if(len(final_arr) != 0):
+                                    #print("final_arr is :")
+                                    print(''.join(final_arr))
+                                    final_arr.pop()
+                                    gesture_no += 1
+                            elif(predictions_labels_plot == 'complete'):
+                            	
+                                ######################################################
+                                			#TODO( Add code here )
+
+                                #Append recommended word to Sent_arr
+                                #Set final_arr to []
+
+                                ######################################################
+
+                                gesture_no = 1
                             else:
                                 final_arr.append(str(predictions_labels_plot))
                                 gesture_no += 1
-                              
-                                #print(final_arr)
                                 break
-            #print(final_arr)
-            #print()
-            #print("Enter next gesture")
 
             arr.append(predictions_labels_plot)
 
-            #print(predictions_labels_plot)
+            cv2.putText(frame, 'Enter gesture ' + str(gesture_no) + ': '+ str(predictions_labels_plot),
+                                    (int(im_width*0.01),int(im_height*0.1)),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
 
-            cv2.putText(frame, str(predictions_labels_plot),
-                        (int(im_width*0.65),int(im_height*0.1)),
+
+            # cv2.putText(frame, 'Recommendation : ' +  str(''.join(final_arr)),
+            #             (int(im_width*0.01),int(im_height*0.7)),
+            #             cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
+
+            cv2.putText(frame, 'Word : ' +  str(''.join(final_arr)),
+                        (int(im_width*0.01),int(im_height*0.8)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
+
+            cv2.putText(frame, 'Sentence : ' +  str(''.join(Sent_arr)),
+                        (int(im_width*0.01),int(im_height*0.9)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0), 2)
 
             # Calculate Frames per second (FPS)
@@ -278,7 +305,7 @@ if __name__ == '__main__':
 
             if args['display']:
                 # Display FPS on frame
-                detector_utils.draw_text_on_image("FPS : " + str("{0:.2f}".format(fps)), frame)
+                #detector_utils.draw_text_on_image("FPS : " + str("{0:.2f}".format(fps)), frame)
                 cv2.imshow('Detection', cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     cv2.destroyAllWindows()
