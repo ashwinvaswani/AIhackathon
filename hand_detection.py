@@ -3,6 +3,7 @@ import datetime
 import argparse
 import imutils
 from imutils.video import VideoStream
+import os
 
 import copy
 import numpy as np
@@ -21,6 +22,17 @@ from keras import Model, layers
 from keras.models import load_model, model_from_json
 
 from utils import detector_utils as detector_utils
+
+import nltk,pandas as pd,numpy as np
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, RegexpStemmer
+from nltk import WordNetLemmatizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from nltk import FreqDist
+from nltk.corpus import brown
+
+import pyttsx3
 
 labels_dict = {'A':0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'J':9,'K':10,'L':11,'M':12,
                    'N':13,'O':14,'P':15,'Q':16,'R':17,'S':18,'T':19,'U':20,'V':21,'W':22,'X':23,'Y':24,
@@ -184,37 +196,29 @@ if __name__ == '__main__':
     # model = create_model()
     # model.load_weights('Final_model_wn_weights.h5')
 
-    ####################################################
-    # TODO (Add code here)
+    Engine=pyttsx3.init()
 
-    import nltk,pandas as pd,numpy as np
+    
     data=pd.read_excel('Book1.xlsx')
-    from nltk.corpus import stopwords
+    
 
     nltk.download('stopwords')
     stop = stopwords.words('english')
     b=['where','how','what','who','why']
     stop=list(set(stop)-set(b))
 
-    from nltk.stem import PorterStemmer, RegexpStemmer
     stem = PorterStemmer()
     nltk.download('wordnet')
-    from nltk import WordNetLemmatizer
     lemma = WordNetLemmatizer()
 
 
     data1=data
     data1['data'] = data['data'].apply(func)
 
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.metrics.pairwise import cosine_similarity
-
     x = TfidfVectorizer(stop_words=stop)
     y = x.fit_transform(data1['data'])
 
-    from nltk import FreqDist
     nltk.download('brown')
-    from nltk.corpus import brown
     a = FreqDist(i.lower() for i in brown.words())
     b = a.most_common()
     words= []
@@ -313,7 +317,7 @@ if __name__ == '__main__':
                 num_hands_detect, score_thresh, scores, boxes, classes, im_width, im_height, frame)
 
             # When no hand is detected
-            if (max(scores) < 0.5):
+            if (max(scores) < 0.6):
                 frame_copy = cv2.imread('frame_copy.jpg')
                 cv2.imwrite("img_thr2.jpg", frame_copy)
 
@@ -322,7 +326,7 @@ if __name__ == '__main__':
             pred = model.predict_classes(tester_img)
             predictions_labels_plot = get_labels_for_plot(pred)
 
-            if (max(scores) < 0.5):
+            if (max(scores) < 0.6):
                 predictions_labels_plot = "nothing"
 
             if (len(arr) > 20):
@@ -346,6 +350,10 @@ if __name__ == '__main__':
                                     gesture_no += 1
                                     #print(str(''.join(final_arr)).lower())
                                     r1,r2=recommend_word(str(''.join(final_arr)).lower())
+
+                                else:
+                                    Sent_arr.pop()
+                                    gesture_no = 1
                             
 
 
@@ -355,6 +363,11 @@ if __name__ == '__main__':
                                 if(r1 != None):
                                     Sent_arr.append(r1)
                                     final_arr = []
+                                    Engine.say(r1)
+                                    Engine.runAndWait()
+
+                                   
+
                                     word2tdf=r1
                                     print(word2tdf)
                                     gesture_no=1
@@ -370,6 +383,11 @@ if __name__ == '__main__':
                                 if(r2 != None):
                                     Sent_arr.append(r2)
                                     final_arr=[]
+                                    Engine.say(r2)
+                                    Engine.runAndWait()
+
+                                    
+
                                     word2tdf=r2
                                     gesture_no=1
                                     r1 = None
