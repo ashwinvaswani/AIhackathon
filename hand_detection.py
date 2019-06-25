@@ -36,44 +36,7 @@ import pyttsx3
 
 labels_dict = {'A':0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'J':9,'K':10,'L':11,'M':12,
                    'N':13,'O':14,'P':15,'Q':16,'R':17,'S':18,'T':19,'U':20,'V':21,'W':22,'X':23,'Y':24,
-                   'Z':25,'nothing':26,'space':27,'delete':28,'complete':29}
-
-
-
-def create_model():
-    model = Sequential()
-
-    model.add(Conv2D(16, kernel_size=[3, 3], padding='same', activation='relu', input_shape=(150, 150, 3)))
-    model.add(Conv2D(32, kernel_size=[3, 3], padding='same', activation='relu'))
-    model.add(MaxPool2D(pool_size=[3, 3]))
-
-    model.add(Conv2D(32, kernel_size=[3, 3], padding='same', activation='relu'))
-    model.add(Conv2D(64, kernel_size=[3, 3], padding='same', activation='relu'))
-    model.add(MaxPool2D(pool_size=[3, 3]))
-
-    model.add(Conv2D(128, kernel_size=[3, 3], padding='same', activation='relu'))
-    model.add(Conv2D(256, kernel_size=[3, 3], padding='same', activation='relu'))
-    model.add(MaxPool2D(pool_size=[3, 3]))
-
-    model.add(BatchNormalization())
-
-    model.add(Flatten())
-    model.add(Dropout(0.5))
-    model.add(Dense(512, activation='relu', kernel_regularizer=regularizers.l2(0.001)))
-    model.add(Dropout(0.5))
-    model.add(Dense(26, activation='softmax'))
-
-    model.compile(optimizer='adam', loss=keras.losses.categorical_crossentropy, metrics=["accuracy"])
-
-    print("MODEL CREATED")
-    model.summary()
-
-    return model
-
-
-def fit_model():
-    model_hist = model.fit(X_train, Y_train, batch_size=32, epochs=20, validation_split=0.1)
-    return model_hist
+                   'Z':25,'Rec1':26,'Rec2':27,'delete':28}
 
 
 def get_labels_for_plot(predictions):
@@ -229,7 +192,7 @@ if __name__ == '__main__':
 
     ####################################################
 
-    model = load_model('new_model2.h5')
+    model = load_model('new_model4.h5')
     # Get stream from webcam and set parameters)
     vs = VideoStream().start()
 
@@ -251,6 +214,8 @@ if __name__ == '__main__':
     r4 = "None  "
     recommended = "None"
     counter = 0
+    flag_r1 = 0
+    flag_r2 = 0
     # print("Enter first gesture")
     gesture_no = 1
 
@@ -352,21 +317,38 @@ if __name__ == '__main__':
                                     r1,r2=recommend_word(str(''.join(final_arr)).lower())
 
                                 else:
-                                    Sent_arr.pop()
-                                    gesture_no = 1
+                                    if(len(Sent_arr)!=0):
+                                        Sent_arr.pop()
+                                        gesture_no = 1
                             
 
 
                                 gesture_no = 1
-                            elif (predictions_labels_plot == 'complete'):
+                            elif (predictions_labels_plot == 'Rec1'):
+
+                                if(r3!= None and flag_r1 == 1):
+                                    Sent_arr = []
+                                    Sent_arr.append(r3)
+                                    final_arr = []
+                                    Engine.say(r3)
+                                    Engine.runAndWait()
+
+
+                                    gesture_no = 1
+                                    r3 = None
+                                    r4 = None
+                                    r1 = None
+                                    r2 = None
+                                    Sent_arr = []
+
+                                    flag_r1 = 0
+                                    flag_r2 = 0
 
                                 if(r1 != None):
                                     Sent_arr.append(r1)
                                     final_arr = []
                                     Engine.say(r1)
                                     Engine.runAndWait()
-
-                                   
 
                                     word2tdf=r1
                                     print(word2tdf)
@@ -378,15 +360,30 @@ if __name__ == '__main__':
                                     r4 = r4[0]
                                     print(r3)
                                     print(r4)
+                                    flag_r1 = 1
 
-                            elif (predictions_labels_plot == 'space'):
+                            elif (predictions_labels_plot == 'Rec2'):
+
+                                if(r3!= None and flag_r1 == 1):
+                                    Sent_arr = []
+                                    Sent_arr.append(r4)
+                                    final_arr = []
+                                    Engine.say(r4)
+                                    Engine.runAndWait()
+                                    gesture_no = 1
+                                    r3 = None
+                                    r4 = None
+                                    r1 = None
+                                    r2 = None
+                                    Sent_arr = []
+                                    flag_r1 = 0
+                                    flag_r2 = 0
+
                                 if(r2 != None):
                                     Sent_arr.append(r2)
                                     final_arr=[]
                                     Engine.say(r2)
                                     Engine.runAndWait()
-
-                                    
 
                                     word2tdf=r2
                                     gesture_no=1
@@ -397,6 +394,8 @@ if __name__ == '__main__':
                                     r4 = r4[0]
                                     print(r3)
                                     print(r4)
+                                    flag_r2 = 1
+
     
                             else:
                                 final_arr.append(str(predictions_labels_plot))
