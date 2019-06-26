@@ -36,7 +36,7 @@ import pyttsx3
 
 labels_dict = {'A':0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'J':9,'K':10,'L':11,'M':12,
                    'N':13,'O':14,'P':15,'Q':16,'R':17,'S':18,'T':19,'U':20,'V':21,'W':22,'X':23,'Y':24,
-                   'Z':25,'Rec1':26,'Rec2':27,'delete':28}
+                   'Z':25,'Complete1':26,'Complete2':27,'delete':28}
 
 
 def get_labels_for_plot(predictions):
@@ -138,8 +138,8 @@ def recommend_sentence(text):
         return ([data.loc[index1], data.loc[index2]])
 
 def func(text):
-        text = ' '.join([stem.stem(i) for i in text.split()])
-        text = ' '.join([lemma.lemmatize(i) for i in text.split()])
+        # text = ' '.join([stem.stem(i) for i in text.split()])
+        # text = ' '.join([lemma.lemmatize(i) for i in text.split()])
         return text.lower()
 
 
@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
 
     data1=data
-    data1['data'] = data['data'].apply(func)
+    #data1['data'] = data['data'].apply(func)
 
     x = TfidfVectorizer(stop_words=stop)
     y = x.fit_transform(data1['data'])
@@ -192,7 +192,7 @@ if __name__ == '__main__':
 
     ####################################################
 
-    model = load_model('new_model4.h5')
+    model = load_model('new_model8.h5')
     # Get stream from webcam and set parameters)
     vs = VideoStream().start()
 
@@ -324,7 +324,7 @@ if __name__ == '__main__':
 
 
                                 gesture_no = 1
-                            elif (predictions_labels_plot == 'Rec1'):
+                            elif (predictions_labels_plot == 'Complete1'):
 
                                 if(r3!= None and flag_r1 == 1):
                                     Sent_arr = []
@@ -362,7 +362,7 @@ if __name__ == '__main__':
                                     print(r4)
                                     flag_r1 = 1
 
-                            elif (predictions_labels_plot == 'Rec2'):
+                            elif (predictions_labels_plot == 'Complete2'):
 
                                 if(r3!= None and flag_r1 == 1):
                                     Sent_arr = []
