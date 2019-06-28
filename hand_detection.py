@@ -54,7 +54,7 @@ def load_test_dataa():
     images = []
     names = []
     size = 50, 50
-    temp = cv2.imread('./img_thr2.jpg')
+    temp = cv2.imread('./closing.jpg')
     temp = cv2.resize(temp, size)
     # temp = cv2.cvtColor(temp,cv2.COLOR_RGB2GRAY)
     images.append(temp)
@@ -250,7 +250,7 @@ if __name__ == '__main__':
 
             gray = cv2.GaussianBlur(gray, (7, 7), 0)
 
-            change_every = 200
+            change_every = 500
 
             if num_frames < 30 or (num_frames > ((int(num_frames/change_every))*change_every) + 150 and (num_frames < (int(num_frames/change_every))*change_every +230)):
                 print("Warning!! :Stay Still.")
@@ -321,7 +321,9 @@ if __name__ == '__main__':
                                 if (len(final_arr) != 0):
 
                                     gesture_no = 1
-                                    Sent_arr.append(str(' '.join(final_arr)))
+                                    Sent_arr.append(str(''.join(final_arr)))
+                                    Engine.say(str(''.join(final_arr)))
+                                    Engine.runAndWait()
                                     final_arr = []
                             elif (predictions_labels_plot == 'delete'):
 
