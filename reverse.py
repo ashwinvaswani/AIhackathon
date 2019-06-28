@@ -2,14 +2,36 @@ import os
 import cv2
 import time 
 import shutil
+import sys
+import speech_recognition as sr  
 
 if __name__ == "__main__":
 
-	print("Enter a paragraph:")
-	user_input = input()
+
+	mode_type = sys.argv[1]
+
+	if mode_type == 'speech':
+		print("Enter a paragraph:")
+		user_input = input()
+		data = user_input.split(' ')
+	elif mode_type == 'voice':
+		r = sr.Recognizer()                                                                                   
+		with sr.Microphone(device_index = 2) as source:  
+			r.adjust_for_ambient_noise(source)
+			print("Speak:")                                                                                   
+			audio = r.listen(source)   
+		
+		try:
+			print("You said " + r.recognize_google(audio))
+			data = r.recognize_google(audio).split(' ')
+		except sr.UnknownValueError:
+			print("Could not understand audio")
+		except sr.RequestError as e:
+			print("Could not request results; {0}".format(e))
+
+
 	thresh = 20
 	images = []
-	data = user_input.split(' ')
 
 
 	current_dir2 = os.path.dirname(os.path.realpath('__file__'))
