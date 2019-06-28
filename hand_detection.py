@@ -4,6 +4,7 @@ import argparse
 import imutils
 from imutils.video import VideoStream
 import os
+import random
 
 import copy
 import numpy as np
@@ -106,7 +107,6 @@ def segment(image, threshold=25):
     #     return (thresholded)
 
     return thresholded
-
 def recommend_word(text):
         if len(text)==0:
             return [None,None]
@@ -117,17 +117,17 @@ def recommend_word(text):
         for i in words:
             if i.startswith(text):
                 r.append(i)
-                cnt += 1
-                if len(r) == 2:
-                    flag = 1
-                    return r
-        if cnt == 1:
-            return [r[0],None]
-        elif flag == 0:
-            return [None,None]
+        if len(r)==0:
+                return ['None','None']
+        if len(r)==1:
+                return [r[0],'None']
+        if len(r)==2:
+                return [r[0],r[1]]
+        if len(r)>2:
+                return(random.choices(r,k=2))
 
 def recommend_sentence(text):
-        if len(text)==0:
+        if len(text)==0:r
             return [None,None]
         sent = [text]
         test = [func(sent[0])]
@@ -266,6 +266,7 @@ if __name__ == '__main__':
                 # print("Warning!! :Stay Still.")
             else:
                 # segment the hand region
+                flag_bg = 0
                 hand = segment(gray)
 
                 # check whether hand region is segmented
@@ -318,115 +319,116 @@ if __name__ == '__main__':
                         if counter == len(arr):
                             arr = []
                             counter = 0
-                            if (predictions_labels_plot == 'nothing'):
+                            if flag_bg == 0:
+                                if (predictions_labels_plot == 'nothing'):
 
-                                if (len(final_arr) != 0):
+                                    if (len(final_arr) != 0):
 
-                                    gesture_no = 1
-                                    Sent_arr.append(str(''.join(final_arr)))
-                                    Engine.say(str(''.join(final_arr)))
-                                    Engine.runAndWait()
-                                    final_arr = []
-                            elif (predictions_labels_plot == 'delete'):
-
-                                if (len(final_arr) != 0):
-                                    final_arr.pop()
-                                    gesture_no += 1
-                                    #print(str(''.join(final_arr)).lower())
-                                    r1,r2=recommend_word(str(''.join(final_arr)).lower())
-
-                                else:
-                                    if(len(Sent_arr)!=0):
-                                        Sent_arr.pop()
                                         gesture_no = 1
-                            
+                                        Sent_arr.append(str(''.join(final_arr)))
+                                        Engine.say(str(''.join(final_arr)))
+                                        Engine.runAndWait()
+                                        final_arr = []
+                                elif (predictions_labels_plot == 'delete'):
 
+                                    if (len(final_arr) != 0):
+                                        final_arr.pop()
+                                        gesture_no += 1
+                                        #print(str(''.join(final_arr)).lower())
+                                        r1,r2=recommend_word(str(''.join(final_arr)).lower())
 
-                                gesture_no = 1
-                            elif (predictions_labels_plot == 'Complete1'):
-
-                                if(r3!= None and flag_r1 == 1):
-                                    Sent_arr = []
-                                    Sent_arr.append(r3)
-                                    final_arr = []
-                                    Engine.say(r3)
-                                    Engine.runAndWait()
+                                    else:
+                                        if(len(Sent_arr)!=0):
+                                            Sent_arr.pop()
+                                            gesture_no = 1
+                                
 
 
                                     gesture_no = 1
-                                    r3 = None
-                                    r4 = None
-                                    r1 = None
-                                    r2 = None
-                                    Sent_arr = []
+                                elif (predictions_labels_plot == 'Complete1'):
 
-                                    flag_r1 = 0
-                                    flag_r2 = 0
+                                    if(r3!= None and flag_r1 == 1):
+                                        Sent_arr = []
+                                        Sent_arr.append(r3)
+                                        final_arr = []
+                                        Engine.say(r3)
+                                        Engine.runAndWait()
 
-                                if(r1 != None):
-                                    Sent_arr.append(r1)
-                                    final_arr = []
-                                    Engine.say(r1)
+
+                                        gesture_no = 1
+                                        r3 = None
+                                        r4 = None
+                                        r1 = None
+                                        r2 = None
+                                        Sent_arr = []
+
+                                        flag_r1 = 0
+                                        flag_r2 = 0
+
+                                    if(r1 != None):
+                                        Sent_arr.append(r1)
+                                        final_arr = []
+                                        Engine.say(r1)
+                                        Engine.runAndWait()
+
+                                        word2tdf=r1
+                                        print(word2tdf)
+                                        gesture_no=1
+                                        r1 = None
+                                        r2 = None
+                                        r3,r4=recommend_sentence(word2tdf)
+                                        r3 = r3[0]
+                                        r4 = r4[0]
+                                        print(r3)
+                                        print(r4)
+                                        flag_r1 = 1
+
+                                elif (predictions_labels_plot == 'Complete2'):
+
+                                    if(r3!= None and flag_r1 == 1):
+                                        Sent_arr = []
+                                        Sent_arr.append(r4)
+                                        final_arr = []
+                                        Engine.say(r4)
+                                        Engine.runAndWait()
+                                        gesture_no = 1
+                                        r3 = None
+                                        r4 = None
+                                        r1 = None
+                                        r2 = None
+                                        Sent_arr = []
+                                        flag_r1 = 0
+                                        flag_r2 = 0
+
+                                    if(r2 != None):
+                                        Sent_arr.append(r2)
+                                        final_arr=[]
+                                        Engine.say(r2)
+                                        Engine.runAndWait()
+
+                                        word2tdf=r2
+                                        gesture_no=1
+                                        r1 = None
+                                        r2 = None
+                                        r3,r4=recommend_sentence(word2tdf)
+                                        r3 = r3[0]
+                                        r4 = r4[0]
+                                        print(r3)
+                                        print(r4)
+                                        flag_r2 = 1
+
+        
+                                else:
+                                    Engine.say(predictions_labels_plot)
                                     Engine.runAndWait()
-
-                                    word2tdf=r1
-                                    print(word2tdf)
-                                    gesture_no=1
-                                    r1 = None
-                                    r2 = None
-                                    r3,r4=recommend_sentence(word2tdf)
-                                    r3 = r3[0]
-                                    r4 = r4[0]
-                                    print(r3)
-                                    print(r4)
-                                    flag_r1 = 1
-
-                            elif (predictions_labels_plot == 'Complete2'):
-
-                                if(r3!= None and flag_r1 == 1):
-                                    Sent_arr = []
-                                    Sent_arr.append(r4)
-                                    final_arr = []
-                                    Engine.say(r4)
-                                    Engine.runAndWait()
-                                    gesture_no = 1
-                                    r3 = None
-                                    r4 = None
-                                    r1 = None
-                                    r2 = None
-                                    Sent_arr = []
-                                    flag_r1 = 0
-                                    flag_r2 = 0
-
-                                if(r2 != None):
-                                    Sent_arr.append(r2)
-                                    final_arr=[]
-                                    Engine.say(r2)
-                                    Engine.runAndWait()
-
-                                    word2tdf=r2
-                                    gesture_no=1
-                                    r1 = None
-                                    r2 = None
-                                    r3,r4=recommend_sentence(word2tdf)
-                                    r3 = r3[0]
-                                    r4 = r4[0]
-                                    print(r3)
-                                    print(r4)
-                                    flag_r2 = 1
-
-    
-                            else:
-                                Engine.say(predictions_labels_plot)
-                                Engine.runAndWait()
-                                final_arr.append(str(predictions_labels_plot))
-                                gesture_no += 1
-                            
-                                if len(final_arr)!=0:
-                                    #print(str(''.join(final_arr)).lower())
-                                    r1,r2=recommend_word(str(''.join(final_arr)).lower())
- 
-                                break
+                                    final_arr.append(str(predictions_labels_plot))
+                                    gesture_no += 1
+                                
+                                    if len(final_arr)!=0:
+                                        #print(str(''.join(final_arr)).lower())
+                                        r1,r2=recommend_word(str(''.join(final_arr)).lower())
+     
+                                    break
 
             arr.append(predictions_labels_plot)
 
