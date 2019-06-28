@@ -93,17 +93,19 @@ def segment(image, threshold=25):
                                 cv2.THRESH_BINARY)[1]
 
     # get the contours in the thresholded image
-    (cnts, _) = cv2.findContours(thresholded.copy(),
-                                 cv2.RETR_EXTERNAL,
-                                 cv2.CHAIN_APPROX_SIMPLE)
+    #(cnts, _) = cv2.findContours(thresholded.copy(),
+                                 #cv2.RETR_EXTERNAL,
+                                 #cv2.CHAIN_APPROX_SIMPLE)
 
     # return None, if no contours detected
-    if len(cnts) == 0:
-        return
-    else:
-        # based on contour area, get the maximum contour which is the hand
-        segmented = max(cnts, key=cv2.contourArea)
-        return (thresholded, segmented)
+    # if len(cnts) == 0:
+    #     return
+    # else:
+    #     # based on contour area, get the maximum contour which is the hand
+    #     #segmented = max(cnts, key=cv2.contourArea)
+    #     return (thresholded)
+
+    return thresholded
 
 def recommend_word(text):
         if len(text)==0:
@@ -245,10 +247,22 @@ if __name__ == '__main__':
                 print("Error converting to RGB")
 
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
             gray = cv2.GaussianBlur(gray, (7, 7), 0)
 
-            if num_frames < 30:
+            change_every = 200
+
+            if num_frames < 30 or (num_frames > ((int(num_frames/change_every))*change_every) + 150 and (num_frames < (int(num_frames/change_every))*change_every +230)):
+                print("Warning!! :Stay Still.")
+                cv2.putText(frame, 'Warning!! : Stay still!' ,
+                        (int(im_width * 0.3), int(im_height * 0.05)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+
+
+            if num_frames < 30 or (num_frames > ((int(num_frames/change_every))*change_every) and (num_frames < (int(num_frames/change_every))*change_every + 30)):
+            #if num_frames < 30 or (num_frames > 500 and num_frames < 530):
                 run_avg(gray, aWeight)
+                # print("Warning!! :Stay Still.")
             else:
                 # segment the hand region
                 hand = segment(gray)
@@ -257,7 +271,7 @@ if __name__ == '__main__':
                 if hand is not None:
                     # if yes, unpack the thresholded image and
                     # segmented region
-                    (thresholded, segmented) = hand
+                    (thresholded) = hand
                     cv2.imwrite('threshold.jpg', thresholded)
 
                     # draw the segmented region and display the frame
@@ -268,6 +282,7 @@ if __name__ == '__main__':
                         vs.stop()
                         break
 
+            print(num_frames)
             num_frames += 1
 
             font = cv2.FONT_HERSHEY_SCRIPT_SIMPLEX
@@ -294,7 +309,7 @@ if __name__ == '__main__':
             if (max(scores) < 0.6):
                 predictions_labels_plot = "nothing"
 
-            if (len(arr) > 20):
+            if (len(arr) > 30):
                 for elmts in arr:
                     if predictions_labels_plot == elmts:
                         counter += 1
@@ -398,6 +413,8 @@ if __name__ == '__main__':
 
     
                             else:
+                                Engine.say(predictions_labels_plot)
+                                Engine.runAndWait()
                                 final_arr.append(str(predictions_labels_plot))
                                 gesture_no += 1
                             
