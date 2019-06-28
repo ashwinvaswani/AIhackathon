@@ -222,7 +222,7 @@ if __name__ == '__main__':
     flag_r2 = 0
     # print("Enter first gesture")
     gesture_no = 1
-
+    warn = 0
     bg = None
     aWeight = 0.5
     num_frames = 0
@@ -253,13 +253,14 @@ if __name__ == '__main__':
             gray = cv2.GaussianBlur(gray, (7, 7), 0)
 
             change_every = 500
-            
+
             if num_frames < 25 or ( (num_frames > ((int(num_frames/change_every))*change_every) + 450 and (num_frames < (int(num_frames/change_every))*change_every +525)) or (num_frames > ((int(num_frames/change_every))*change_every) and (num_frames < (int(num_frames/change_every))*change_every +25)) ):
                 #print("Warning!! :Stay Still." + str(num_frames))
 
                 cv2.putText(frame, 'Warning!! : Stay still!' ,
                         (int(im_width * 0.3), int(im_height * 0.05)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                warn =1
 
 
             if num_frames < 25 or (num_frames > ((int(num_frames/change_every))*change_every) and (num_frames < (int(num_frames/change_every))*change_every + 30)):
@@ -270,10 +271,10 @@ if __name__ == '__main__':
                 # print("Warning!! :Stay Still.")
             else:
                 # segment the hand region
-
-                cv2.putText(frame, 'You can start entering gestures again!' ,
-                        (int(im_width * 0.3), int(im_height * 0.05)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                warn = 0
+                # cv2.putText(frame, 'You can start entering gestures again!' ,
+                #         (int(im_width * 0.3), int(im_height * 0.05)),
+                #         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                 flag_bg = 0
                 hand = segment(gray)
 
@@ -330,13 +331,14 @@ if __name__ == '__main__':
                             if flag_bg == 0:
                                 if (predictions_labels_plot == 'nothing'):
 
-                                    if (len(final_arr) != 0):
+                                    if warn != 1:
+                                        if (len(final_arr) != 0):
 
-                                        gesture_no = 1
-                                        Sent_arr.append(str(''.join(final_arr)))
-                                        Engine.say(str(''.join(final_arr)))
-                                        Engine.runAndWait()
-                                        final_arr = []
+                                            gesture_no = 1
+                                            Sent_arr.append(str(''.join(final_arr)))
+                                            Engine.say(str(''.join(final_arr)))
+                                            Engine.runAndWait()
+                                            final_arr = []
                                 elif (predictions_labels_plot == 'delete'):
 
                                     if (len(final_arr) != 0):
