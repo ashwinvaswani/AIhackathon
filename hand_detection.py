@@ -107,27 +107,29 @@ def segment(image, threshold=25):
     #     return (thresholded)
 
     return thresholded
-def recommend_word(text):
-        if len(text)==0:
-            return [None,None]
-        r = []
-        flag = 0
-        cnt = 0
 
-        for i in words:
-            if i.startswith(text):
-                r.append(i)
-        if len(r)==0:
-                return ['None','None']
-        if len(r)==1:
-                return [r[0],'None']
-        if len(r)==2:
-                return [r[0],r[1]]
-        if len(r)>2:
-                return(random.choices(r,k=2))
+def recommend_word(text):
+    if len(text)==0:
+        return [None,None]
+    r = []
+    flag = 0
+    cnt = 0
+
+    for i in words:
+        if i.startswith(text):
+            r.append(i)
+            cnt += 1
+            if len(r) == 2:
+                flag = 1
+                return r
+
+    if cnt == 1:
+        return [r[0],None]
+    elif flag == 0:
+        return [None,None]
 
 def recommend_sentence(text):
-        if len(text)==0:r
+        if len(text)==0:
             return [None,None]
         sent = [text]
         test = [func(sent[0])]
@@ -251,21 +253,27 @@ if __name__ == '__main__':
             gray = cv2.GaussianBlur(gray, (7, 7), 0)
 
             change_every = 500
+            
+            if num_frames < 25 or ( (num_frames > ((int(num_frames/change_every))*change_every) + 450 and (num_frames < (int(num_frames/change_every))*change_every +525)) or (num_frames > ((int(num_frames/change_every))*change_every) and (num_frames < (int(num_frames/change_every))*change_every +25)) ):
+                #print("Warning!! :Stay Still." + str(num_frames))
 
-            if num_frames < 25 or (num_frames > ((int(num_frames/change_every))*change_every) + 450 and (num_frames < (int(num_frames/change_every))*change_every +530)):
-                print("Warning!! :Stay Still.")
                 cv2.putText(frame, 'Warning!! : Stay still!' ,
                         (int(im_width * 0.3), int(im_height * 0.05)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
 
             if num_frames < 25 or (num_frames > ((int(num_frames/change_every))*change_every) and (num_frames < (int(num_frames/change_every))*change_every + 30)):
             #if num_frames < 30 or (num_frames > 500 and num_frames < 530):
                 flag_bg = 1
                 run_avg(gray, aWeight)
+                #print("run average " + str(num_frames))
                 # print("Warning!! :Stay Still.")
             else:
                 # segment the hand region
+
+                cv2.putText(frame, 'You can start entering gestures again!' ,
+                        (int(im_width * 0.3), int(im_height * 0.05)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                 flag_bg = 0
                 hand = segment(gray)
 
