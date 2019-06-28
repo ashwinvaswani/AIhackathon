@@ -252,15 +252,16 @@ if __name__ == '__main__':
 
             change_every = 500
 
-            if num_frames < 30 or (num_frames > ((int(num_frames/change_every))*change_every) + 150 and (num_frames < (int(num_frames/change_every))*change_every +230)):
+            if num_frames < 25 or (num_frames > ((int(num_frames/change_every))*change_every) + 450 and (num_frames < (int(num_frames/change_every))*change_every +530)):
                 print("Warning!! :Stay Still.")
                 cv2.putText(frame, 'Warning!! : Stay still!' ,
                         (int(im_width * 0.3), int(im_height * 0.05)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
 
 
-            if num_frames < 30 or (num_frames > ((int(num_frames/change_every))*change_every) and (num_frames < (int(num_frames/change_every))*change_every + 30)):
+            if num_frames < 25 or (num_frames > ((int(num_frames/change_every))*change_every) and (num_frames < (int(num_frames/change_every))*change_every + 30)):
             #if num_frames < 30 or (num_frames > 500 and num_frames < 530):
+                flag_bg = 1
                 run_avg(gray, aWeight)
                 # print("Warning!! :Stay Still.")
             else:
@@ -307,9 +308,10 @@ if __name__ == '__main__':
             predictions_labels_plot = get_labels_for_plot(pred)
 
             if (max(scores) < 0.6):
-                predictions_labels_plot = "nothing"
+                if flag_bg == 0:
+                    predictions_labels_plot = "nothing"
 
-            if (len(arr) > 30):
+            if (len(arr) > 35):
                 for elmts in arr:
                     if predictions_labels_plot == elmts:
                         counter += 1
