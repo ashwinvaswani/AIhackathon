@@ -35,7 +35,7 @@ KNOWN_WIDTH = 11.0
 # load the  image that contains an object that is KNOWN TO BE 1 foot
 # from our camera, then find the paper marker in the image, and initialize
 # the focal length
-image = cv2.imread('paper.jpg')
+image = cv2.imread('./../images/paper.jpg')
 marker = find_marker(image)
 
 
@@ -44,7 +44,7 @@ print('Focal Length:', focalLength)
 
 # load the image, find the marker in the image, then compute the
 # distance to the marker from the camera
-image = cv2.imread('paper.jpg')
+image = cv2.imread('./../images/paper.jpg')
 marker = find_marker(image)
 inches = distance_to_camera(KNOWN_WIDTH, focalLength, marker[1][0])
 

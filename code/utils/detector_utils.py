@@ -76,19 +76,19 @@ def draw_box_on_image(num_hands_detect, score_thresh, scores, boxes, classes, im
 
             #print()
 
-            img = Image.open("frame_copy.jpg")
+            img = Image.open("./../images/frame_copy.jpg")
             img2 = img.crop((left,top, right, bottom))
-            img2.save("img2.jpg")
+            img2.save("./../images/img2.jpg")
 
 
-            img_thr = Image.open("threshold.jpg")
+            img_thr = Image.open("./../images/threshold.jpg")
             img_thr2 = img_thr.crop((left,top, right, bottom))
-            img_thr2.save("img_thr2.jpg")
+            img_thr2.save("./../images/img_thr2.jpg")
 
-            img_thr2 = cv2.imread('img_thr2.jpg')
+            img_thr2 = cv2.imread('./../images/img_thr2.jpg')
             kernel = np.ones((5,5),np.uint8)
             closing = cv2.morphologyEx(img_thr2, cv2.MORPH_CLOSE, kernel)
-            cv2.imwrite("closing.jpg",closing)
+            cv2.imwrite("./../images/closing.jpg",closing)
 
 
             # img = cv2.imread("img2.jpg")

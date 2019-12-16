@@ -55,7 +55,7 @@ def load_test_dataa():
     images = []
     names = []
     size = 50, 50
-    temp = cv2.imread('./closing.jpg')
+    temp = cv2.imread('./../images/closing.jpg')
     temp = cv2.resize(temp, size)
     # temp = cv2.cvtColor(temp,cv2.COLOR_RGB2GRAY)
     images.append(temp)
@@ -92,19 +92,6 @@ def segment(image, threshold=25):
                                 threshold,
                                 255,
                                 cv2.THRESH_BINARY)[1]
-
-    # get the contours in the thresholded image
-    #(cnts, _) = cv2.findContours(thresholded.copy(),
-                                 #cv2.RETR_EXTERNAL,
-                                 #cv2.CHAIN_APPROX_SIMPLE)
-
-    # return None, if no contours detected
-    # if len(cnts) == 0:
-    #     return
-    # else:
-    #     # based on contour area, get the maximum contour which is the hand
-    #     #segmented = max(cnts, key=cv2.contourArea)
-    #     return (thresholded)
 
     return thresholded
 
@@ -196,7 +183,7 @@ if __name__ == '__main__':
 
     ####################################################
 
-    model = load_model('new_model8.h5')
+    model = load_model('./../models/new_model8.h5')
     # Get stream from webcam and set parameters)
     vs = VideoStream().start()
 
@@ -220,12 +207,17 @@ if __name__ == '__main__':
     counter = 0
     flag_r1 = 0
     flag_r2 = 0
-    # print("Enter first gesture")
     gesture_no = 1
     warn = 0
     bg = None
     aWeight = 0.5
     num_frames = 0
+
+    print("\n\n\n\n\n\n\n")
+    print("**********************************************************\n")
+    print("Starting VideoStream\n")
+    print("**********************************************************\n")
+
     try:
 
         while True:
@@ -242,7 +234,7 @@ if __name__ == '__main__':
 
             # Convert image to rgb since opencv loads images in bgr, if not accuracy will decrease
             try:
-                cv2.imwrite('frame_copy.jpg', frame)
+                cv2.imwrite('./../images/frame_copy.jpg', frame)
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
             except:
@@ -283,7 +275,7 @@ if __name__ == '__main__':
                     # if yes, unpack the thresholded image and
                     # segmented region
                     (thresholded) = hand
-                    cv2.imwrite('threshold.jpg', thresholded)
+                    cv2.imwrite('./../images/threshold.jpg', thresholded)
 
                     # draw the segmented region and display the frame
                     # cv2.drawContours(clone, [segmented + (right, top)], -1, (0, 0, 255))
@@ -293,7 +285,7 @@ if __name__ == '__main__':
                         vs.stop()
                         break
 
-            print(num_frames)
+            # print(num_frames)
             num_frames += 1
 
             font = cv2.FONT_HERSHEY_SCRIPT_SIMPLEX
@@ -309,8 +301,8 @@ if __name__ == '__main__':
 
             # When no hand is detected
             if (max(scores) < 0.6):
-                frame_copy = cv2.imread('frame_copy.jpg')
-                cv2.imwrite("img_thr2.jpg", frame_copy)
+                frame_copy = cv2.imread('./../images/frame_copy.jpg')
+                cv2.imwrite("./../images/img_thr2.jpg", frame_copy)
 
             # Preparing cropped image for prediction
             tester_img, tester_name = load_test_dataa()
@@ -356,7 +348,7 @@ if __name__ == '__main__':
 
                                     gesture_no = 1
                                 elif (predictions_labels_plot == 'Complete1'):
-
+                                    print('c1 detected')
                                     if(r3!= None and flag_r1 == 1):
                                         Sent_arr = []
                                         Sent_arr.append(r3)
