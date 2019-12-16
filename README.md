@@ -5,7 +5,7 @@ This repository contains code for the project AI Assistant done during LeadingIn
 All the required packages can be found in the file requirements.txt
 
 ## Running code
-To run the code, simply go the base directory and run 
-'''
+To run the code, simply go the base directory and run the code:
+```
 python3 ./code/hand_detection.py
-'''
+```
